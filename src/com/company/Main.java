@@ -7,30 +7,36 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Map<String, String[]> dictionary = new HashMap<>();
+        HashMap<String, String[]> dictionary = new HashMap<>();
+        HashMap<String, String[]> bigDictionary = new HashMap<>();
         dictionary.put("дом", new String[]{"жилище", "хата", "берлога", "крыша"});
         dictionary.put("прекрасный", new String[]{"замечательный", "восхитительный", "шикарный"});
         dictionary.put("человек", new String[]{"сапиенс", "персона", "индивид", "личность"});
         dictionary.put("большой", new String[]{"огромный", "громадный", "великий"});
 
-        for (Map.Entry<String, String[]> item : dictionary.entrySet()) {
-            System.out.println(item.getKey() + " - " + Arrays.toString(item.getValue()));
 
-        }
-        Map<String, String[]> bigDictionary = new HashMap<>();
         bigDictionary.putAll(dictionary);
-        Set<String>keys = dictionary.keySet();
 
-        Iterator<String[]>iterator = bigDictionary.values().iterator();
-        while (iterator.hasNext()){
-            for (int i = 0; i < keys.size(); i++) {
-                String[] key = iterator.next();
-                ArrayList<String[]> kkkk = new ArrayList<>();
-                Collections.addAll(ArrayList< String[] >key);
+        Set<String> keys = dictionary.keySet();
+
+        Iterator<String> iterator = keys.iterator();
+        while (iterator.hasNext()) {
+            String oldKey = iterator.next();
+            String[] oldValues = dictionary.get(oldKey);
+            for (int i = 0; i < oldValues.length; i++) {
+                String newKey = oldValues[i];
+                ArrayList<String> valuesAsList = new ArrayList<>();
+                Collections.addAll(valuesAsList, oldValues);
+                valuesAsList.remove(newKey);
+                valuesAsList.add(oldKey);
+                String[] newValues = new String[valuesAsList.size()];
+                valuesAsList.toArray(newValues);
+                bigDictionary.put(newKey, newValues);
             }
         }
-
-
+        for (Map.Entry<String, String[]> item : bigDictionary.entrySet()) {
+            System.out.println(item.getKey() + " - " + Arrays.toString(item.getValue()));
+        }
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Tape a word:");
@@ -38,7 +44,7 @@ public class Main {
             String[] words = text.split(" ");
             for (String word : words) {
                 try {
-                    String[] synoniums = dictionary.get(word);
+                    String[] synoniums = bigDictionary.get(word);
                     Random r = new Random();
                     int l = r.nextInt(synoniums.length);
                     System.out.print(synoniums[l] + " ");
@@ -48,7 +54,5 @@ public class Main {
             }
             System.out.println();
         }
-
-
     }
 }
